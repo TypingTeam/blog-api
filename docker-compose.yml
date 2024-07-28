@@ -1,0 +1,22 @@
+version: '3.9'
+
+services:
+  census:
+    container_name: "census-api"
+    environment:
+      prop: val
+    image: ${DOCKER_REGISTRY-}census
+    build:
+      context: .
+      dockerfile: src/Census.Graphql/Dockerfile
+    ports:
+      - 8001:80
+    depends_on:
+      - redis
+  
+  redis:
+    container_name: census-redis-db
+    image: redis:alpine
+    command: redis-server
+    ports:
+      - "6379:6379"
