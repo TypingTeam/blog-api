@@ -3,7 +3,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Keeper.Infrastructure;
 
-public sealed class KeeperDbContext(DbContextOptions options) : DbContext(options)
+public sealed class KeeperDbContext(DbContextOptions<KeeperDbContext> options) 
+    : DbContext(options)
 {
     public DbSet<Post> Posts { get; set; }
 

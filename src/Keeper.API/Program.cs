@@ -1,4 +1,8 @@
+using Keeper.API.Infrastructure;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddSqlServer(builder.Configuration);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
