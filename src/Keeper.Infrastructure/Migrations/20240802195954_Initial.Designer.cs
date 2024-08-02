@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Keeper.Infrastructure.Migrations
 {
     [DbContext(typeof(KeeperDbContext))]
-    [Migration("20240731191524_Initial")]
+    [Migration("20240802195954_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -28,7 +28,9 @@ namespace Keeper.Infrastructure.Migrations
             modelBuilder.Entity("Keeper.Domain.Post", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .ValueGeneratedOnAdd()
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(900)");
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -42,10 +44,12 @@ namespace Keeper.Infrastructure.Migrations
 
                     b.Property<string>("PreviewImageUrl")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(1024)
+                        .HasColumnType("nvarchar(1024)");
 
                     b.Property<string>("PreviewImageUrlFallback")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(1024)
+                        .HasColumnType("nvarchar(1024)");
 
                     b.Property<DateTime?>("PublishedAt")
                         .HasColumnType("datetime2");
@@ -62,11 +66,13 @@ namespace Keeper.Infrastructure.Migrations
 
                     b.Property<string>("Tags")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(2096)
+                        .HasColumnType("nvarchar(2096)");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -79,7 +85,9 @@ namespace Keeper.Infrastructure.Migrations
             modelBuilder.Entity("Keeper.Domain.Profile", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .ValueGeneratedOnAdd()
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(900)");
 
                     b.Property<string>("Image")
                         .IsRequired()
