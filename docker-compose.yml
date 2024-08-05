@@ -1,22 +1,37 @@
-version: '3.9'
-
 services:
-  census:
-    container_name: "census-api"
+  keeper-migrations:
+    container_name: "keeper-migrations"
     environment:
-      prop: val
-    image: ${DOCKER_REGISTRY-}census
+      CONNECTION_STRING: "Server=mssql;Database=keeper-db;User Id=sa;Password=Admin@123"
+    image: ${DOCKER_REGISTRY-}keeper-migrations
     build:
       context: .
-      dockerfile: src/Census.Graphql/Dockerfile
-    ports:
-      - 8001:80
+      dockerfile: infrastructure/migrations/Dockerfile
     depends_on:
-      - redis
+      mssql:
+        condition: service_healthy
   
-  redis:
-    container_name: census-redis-db
-    image: redis:alpine
-    command: redis-server
+  mssql:
+    container_name: sql-server
+    image: mcr.microsoft.com/mssql/server:2017-latest
+    restart: always
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "Admin@123"
     ports:
-      - "6379:6379"
+      - 1433:1433
+    volumes:
+      - ./sql-data:/var/opt/mssql
+  
+#  keeper-api:
+#    container_name: "keeper-api"
+#    environment:
+#      prop: val
+#    image: ${DOCKER_REGISTRY-}keeper-api
+#    build:
+#      context: .
+#      dockerfile: src/Keeper.API/Dockerfile
+#    ports:
+#      - 8001:80
+#    depends_on:
+#      - redis
