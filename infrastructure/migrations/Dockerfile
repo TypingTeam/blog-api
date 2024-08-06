@@ -21,4 +21,5 @@ RUN dotnet ef migrations bundle --project src/Keeper.Infrastructure/Keeper.Infra
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS migration
 WORKDIR /app
 COPY --from=bundler /source/efbundle .
+COPY --from=bundler /source/src/Keeper.API/appsettings.json appsettings.json
 CMD exec ./efbundle --connection $CONNECTION_STRING
