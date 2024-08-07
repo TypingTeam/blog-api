@@ -16,10 +16,14 @@ RUN dotnet restore Keeper.sln
 
 COPY ["src/", "src/"]
 
-RUN dotnet ef migrations bundle --project src/Keeper.Infrastructure/Keeper.Infrastructure.csproj --startup-project src/Keeper.API/Keeper.API.csproj -v --self-contained -r linux-x64
+RUN dotnet ef migrations bundle \
+    --project src/Keeper.Infrastructure/Keeper.Infrastructure.csproj \
+    --startup-project src/Keeper.API/Keeper.API.csproj -v --self-contained -r linux-x64
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS migration
-WORKDIR /app
+WORKDIR /bundle
+
 COPY --from=bundler /source/efbundle .
 COPY --from=bundler /source/src/Keeper.API/appsettings.json appsettings.json
-CMD exec ./efbundle --connection $CONNECTION_STRING
+
+CMD exec ./efbundle

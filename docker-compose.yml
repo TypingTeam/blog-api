@@ -1,8 +1,6 @@
 services:
   keeper-migrations:
     container_name: "keeper-migrations"
-    environment:
-      CONNECTION_STRING: "Server=sql-db;Database=keeper-db;User Id=sa;Password=Admin@123"
     image: ${DOCKER_REGISTRY-}keeper-migrations
     build:
       context: .
@@ -33,16 +31,3 @@ services:
       - ./data:/var/opt/mssql/data
       - ./log:/var/opt/mssql/log
       - ./secrets:/var/opt/mssql/secrets
-  
-#  keeper-api:
-#    container_name: "keeper-api"
-#    environment:
-#      prop: val
-#    image: ${DOCKER_REGISTRY-}keeper-api
-#    build:
-#      context: .
-#      dockerfile: src/Keeper.API/Dockerfile
-#    ports:
-#      - 8001:80
-#    depends_on:
-#      - redis
