@@ -23,6 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Keeper.Application\Keeper.Application.csproj" />
       <ProjectReference Include="..\Keeper.Infrastructure\Keeper.Infrastructure.csproj" />
     </ItemGroup>
 

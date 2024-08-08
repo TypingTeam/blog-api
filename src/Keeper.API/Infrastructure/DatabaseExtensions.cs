@@ -5,7 +5,7 @@ namespace Keeper.API.Infrastructure;
 
 internal static class DatabaseExtensions
 {
-    internal static IServiceCollection AddSqlServer(this IServiceCollection services, IConfiguration configuration)
+    internal static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDbContext<KeeperDbContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString("KeeperDb")));
