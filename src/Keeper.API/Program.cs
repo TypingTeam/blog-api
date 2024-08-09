@@ -18,8 +18,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.MapGet("/post/{postId}", (string postId, PostsHandler handler, CancellationToken token) 
-    => handler.GetPostAsync(postId, token));
+app.MapGet("/post/{postSlug}", (string postSlug, PostsHandler handler, CancellationToken token) 
+    => handler.GetPostBySlugAsync(postSlug, token));
 
 app.UseHttpsRedirection();
 app.MapGet("/", context => context.Response.WriteAsync("Hello from Keeper!"))

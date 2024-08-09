@@ -4,8 +4,8 @@ namespace Keeper.Application;
 
 public class PostsHandler
 {
-    public Post GetPostAsync(string postId, CancellationToken token)
+    public Task<Post> GetPostBySlugAsync(string postId, CancellationToken token)
     {
-        return Post.Create("test", "test", "test", "no-image");
+        return Task.FromResult(Post.Create("test", "test", "test", "no-image"));
     }
 }
