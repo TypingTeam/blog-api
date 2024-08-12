@@ -1,11 +1,23 @@
 ﻿using Keeper.Domain;
+using Keeper.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 
 namespace Keeper.Application;
 
 public class PostsHandler
 {
-    public Task<Post> GetPostBySlugAsync(string postId, CancellationToken token)
+    private readonly KeeperDbContext _context;
+
+    public PostsHandler(KeeperDbContext context)
     {
-        return Task.FromResult(Post.Create("test", "test", "test", "no-image"));
+        _context = context;
+    }
+
+    public async Task<Post> GetPostBySlugAsync(string slug, CancellationToken token)
+    {
+        var post = await _context.Posts.FirstOrDefaultAsync(post => post.Slug == slug, token)
+            ?? throw new Exception("Post not found");
+
+        return post;
     }
 }

@@ -29,4 +29,8 @@
       <ProjectReference Include="..\..\src\Keeper.Domain\Keeper.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Application\" />
+    </ItemGroup>
+
 </Project>
