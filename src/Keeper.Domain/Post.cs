@@ -27,7 +27,7 @@ public partial class Post: Entity
     public DateTime? ScheduledPublishing { get; private set; }
     public bool IsScheduled => ScheduledPublishing is not null;
 
-    public string Slug => GenerateSlug();
+    public string Slug { get; private set; }
     
     [GeneratedRegex(
         @"[^A-Za-z0-9\s]",
@@ -57,7 +57,7 @@ public partial class Post: Entity
         IEnumerable<string>? tags = null)
     {
         var createdAt = DateTime.UtcNow;
-
+        
         var blogPost = new Post
         {
             Title = title,
@@ -72,6 +72,7 @@ public partial class Post: Entity
             ReadingTimeInMinutes = 11
         };
 
+        blogPost.Slug = GenerateSlug();
         return blogPost;
     }
 
