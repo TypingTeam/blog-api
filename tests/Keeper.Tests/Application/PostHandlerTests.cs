@@ -16,12 +16,13 @@ public class PostHandlerTests
             .UseInMemoryDatabase("PostHandlerDb")
             .ConfigureWarnings(b => b.Ignore(InMemoryEventId.TransactionIgnoredWarning))
             .Options;
-        using var context = new KeeperDbContext(contextOptions);
+        await using var context = new KeeperDbContext(contextOptions);
         context.Posts.Add(Post.Create("test", "test", "test", "test"));
-
+        await context.SaveChangesAsync();
+        
         var handler = new PostsHandler(context);
 
-        var post = await handler.GetPostBySlugAsync("tests", default);
+        var post = await handler.GetPostBySlugAsync("test", default);
 
         post.Should().NotBeNull();
     }

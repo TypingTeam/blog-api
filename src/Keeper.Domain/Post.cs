@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
+using Keeper.Domain.Services;
 
 namespace Keeper.Domain;
 
@@ -9,13 +10,12 @@ public partial class Post: Entity
 {
     private Post() { }
     public string Title { get; private set; }
-    public string ShortDescription { get; private set; }
+    public string Slug { get; private set; }
+    public string Description { get; private set; }
     public string Content { get; private set; }
     public string PreviewImageUrl { get; private set; }
     public int ReadingTimeInMinutes { get; private set; }
-    
     public int Likes { get; set; }
-    public string? PreviewImageUrlFallback { get; private set; }
     public IList<string> Tags { get; private set; }
     
     public DateTime CreatedAt { get; private set; }
@@ -26,26 +26,6 @@ public partial class Post: Entity
     
     public DateTime? ScheduledPublishing { get; private set; }
     public bool IsScheduled => ScheduledPublishing is not null;
-
-    public string Slug { get; private set; }
-    
-    [GeneratedRegex(
-        @"[^A-Za-z0-9\s]",
-        RegexOptions.CultureInvariant,
-        matchTimeoutMilliseconds: 1000)]
-    private static partial Regex MatchIfSpecialCharactersExist();
-
-    [GeneratedRegex(
-        @"\s+",
-        RegexOptions.CultureInvariant,
-        matchTimeoutMilliseconds: 1000)]
-    private static partial Regex MatchIfAdditionalSpacesExist();
-
-    [GeneratedRegex(
-        @"\s",
-        RegexOptions.CultureInvariant,
-        matchTimeoutMilliseconds: 1000)]
-    private static partial Regex MatchIfSpaceExist();
     
     public static Post Create(
         string title,
@@ -61,18 +41,17 @@ public partial class Post: Entity
         var blogPost = new Post
         {
             Title = title,
-            ShortDescription = shortDescription,
+            Description = shortDescription,
             Content = content,
             UpdatedAt = createdAt,
             CreatedAt = createdAt,
             ScheduledPublishing = scheduledPublishDate,
             PreviewImageUrl = previewImageUrl,
-            PreviewImageUrlFallback = previewImageUrlFallback,
             Tags = tags?.Select(t => t.Trim()).ToImmutableArray() ?? [],
-            ReadingTimeInMinutes = 11
+            ReadingTimeInMinutes = 11,
+            Slug = TitleSanitizer.GenerateSlug(title)
         };
 
-        blogPost.Slug = GenerateSlug();
         return blogPost;
     }
 
@@ -90,40 +69,12 @@ public partial class Post: Entity
             return;
 
         Title = post.Title;
-        ShortDescription = post.ShortDescription;
+        Description = post.Description;
         Content = post.Content;
         UpdatedAt = DateTime.UtcNow;
         ScheduledPublishing = post.ScheduledPublishing;
         PreviewImageUrl = post.PreviewImageUrl;
-        PreviewImageUrlFallback = post.PreviewImageUrlFallback;
         Tags = post.Tags;
         ReadingTimeInMinutes = post.ReadingTimeInMinutes;
-    }
-    
-    private string GenerateSlug()
-    {
-        if (string.IsNullOrWhiteSpace(Title))
-        {
-            return Title;
-        }
-
-        var normalizedTitle = Title.Normalize(NormalizationForm.FormD);
-        var stringBuilder = new StringBuilder();
-
-        foreach (var c in normalizedTitle.Where(c => CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark))
-        {
-            stringBuilder.Append(c);
-        }
-
-        var cleanTitle = stringBuilder
-            .ToString()
-            .Normalize(NormalizationForm.FormC)
-            .ToLower(CultureInfo.CurrentCulture);
-
-        cleanTitle = MatchIfSpecialCharactersExist().Replace(cleanTitle, "");
-        cleanTitle = MatchIfAdditionalSpacesExist().Replace(cleanTitle, " ");
-        cleanTitle = MatchIfSpaceExist().Replace(cleanTitle, "-");
-
-        return cleanTitle.Trim();
     }
 }
