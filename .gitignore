@@ -454,3 +454,6 @@ $RECYCLE.BIN/
 ## Project related data
 /db-data
 /db-logs
+/sql-data
+/data
+/secrets
